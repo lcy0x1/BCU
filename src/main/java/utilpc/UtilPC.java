@@ -20,6 +20,7 @@ import common.util.anim.MaModel;
 import common.util.pack.Background;
 import common.util.stage.Music;
 import common.util.unit.Form;
+import common.util.unit.Trait;
 import io.BCMusic;
 import io.BCUReader;
 import io.BCUWriter;
@@ -245,6 +246,13 @@ public class UtilPC {
 		return (BufferedImage) CommonStatic.getBCAssets().icon[type][id].getImg().bimg();
 	}
 
+	public static ImageIcon createIcon(int type, int id) {
+		BufferedImage img = getIcon(type, id);
+		if (img != null)
+			return new ImageIcon(img);
+		return null;
+	}
+
 	public static ImageIcon getIcon(VImg v) {
 		FakeImage img = v.getImg();
 		if (img == null)
@@ -255,34 +263,40 @@ public class UtilPC {
 	}
 
 	public static String[] lvText(Form f, int[] lvs) {
-		PCoin pc = f.getPCoin();
+		PCoin pc = f.du.getPCoin();
 		if (pc == null)
 			return new String[] { "Lv." + lvs[0], "" };
 		else {
-			StringBuilder lab;
+			String[] TraitsHolder = new String[pc.trait.size()];
+			for (int i = 0 ; i < pc.trait.size() ; i++) {
+				Trait trait = pc.trait.get(i);
+				if (trait.BCTrait)
+					TraitsHolder[i] = Interpret.TRAIT[trait.id.id];
+				else
+					TraitsHolder[i] = trait.name;
+			}
+			StringBuilder lab = new StringBuilder();
 
-			lab = new StringBuilder();
-
-			if(pc.type != 0) {
-				lab.append("[").append(Interpret.getTrait(pc.type, 0)).append("]").append(" ");
+			if(pc.trait.size() > 0) {
+				lab.append("[").append(Interpret.getTrait(TraitsHolder, 0)).append("]").append(" ");
 			}
 
-			lab.append(Interpret.PCTX[pc.info[0][0]]);
+			lab.append(Interpret.PCTX[pc.info.get(0)[0]]);
 
 			StringBuilder str = new StringBuilder("Lv." + lvs[0] + ", {");
-			for (int i = 1; i < 5; i++) {
+			for (int i = 1; i < pc.info.size(); i++) {
 				str.append(lvs[i]).append(",");
 				lab.append(", ").append(getPCoinAbilityText(pc, i));
 			}
-			str.append(lvs[5]).append("}");
+			str.append(lvs[pc.info.size()]).append("}");
 			return new String[] {str.toString(), lab.toString()};
 		}
 	}
 
 	public static String getPCoinAbilityText(PCoin pc, int index) {
-		if(index < 0 || index >= pc.info.length)
+		if(index < 0 || index >= pc.info.size())
 			return null;
 
-		return Interpret.PCTX[pc.info[index][0]];
+		return Interpret.PCTX[pc.info.get(index)[0]];
 	}
 }

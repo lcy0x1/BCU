@@ -10,6 +10,7 @@ import page.Page;
 import page.support.AnimTreeRenderer;
 import page.support.TreeNodeExpander;
 
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -60,6 +61,8 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 	private final JBTN reml = new JBTN(0, "reml");
 	private final JBTN advs = new JBTN(0, "advs");
 	private final JBTN sort = new JBTN(0, "sort");
+	private final JBTN camres = new JBTN(0, "rescam");
+	private final JBTN zomres = new JBTN(0, "reszom");
 	private final JLabel inft = new JLabel();
 	private final JLabel inff = new JLabel();
 	private final JLabel infv = new JLabel();
@@ -176,7 +179,6 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 		int ani = jlt.getSelectedIndex();
 		int par = maet.getSelectedRow();
 		int row = mpet.getSelectedRow();
-
 		if (aep.focus == null) {
 			agt.renewNodes();
 		} else {
@@ -210,8 +212,11 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 	@Override
 	protected synchronized void resized(int x, int y) {
 		setBounds(0, 0, x, y);
-		set(aep, x, y, 550, 0, 1750, 50);
+		set(aep, x, y, 800, 0, 1750, 50);
 		set(back, x, y, 0, 0, 200, 50);
+
+		set(camres, x, y, 350, 0, 200, 50);
+		set(zomres, x, y, 560, 0, 200, 50);
 
 		set(addp, x, y, 300, 750, 200, 50);
 		set(remp, x, y, 300, 800, 200, 50);
@@ -268,6 +273,13 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 	private void addListeners() {
 
 		back.addActionListener(arg0 -> changePanel(getFront()));
+
+		camres.setLnr(x -> {
+			ab.ori.x = 0;
+			ab.ori.y = 0;
+		});
+
+		zomres.setLnr(x -> ab.setSiz(0.5));
 
 		jta.addTreeSelectionListener(a -> {
 			if(isAdj())
@@ -482,6 +494,8 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 	private void ini() {
 		add(aep);
 		add(back);
+		add(camres);
+		add(zomres);
 		add(jspu);
 		add(jspp);
 		add(jspt);
@@ -509,7 +523,6 @@ public class MaAnimEditPage extends Page implements AbEditPage {
 		agt.renewNodes();
 		jta.setCellRenderer(new AnimTreeRenderer());
 		SwingUtilities.invokeLater(() -> jta.setUI(new TreeNodeExpander(jta)));
-		jta.setRowHeight(0);
 		inft.setBorder(BorderFactory.createEtchedBorder());
 		inff.setBorder(BorderFactory.createEtchedBorder());
 		infv.setBorder(BorderFactory.createEtchedBorder());

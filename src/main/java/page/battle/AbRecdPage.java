@@ -12,8 +12,6 @@ import page.basis.BasisPage;
 import page.info.StageViewPage;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public abstract class AbRecdPage extends Page {
 
@@ -66,9 +64,18 @@ public abstract class AbRecdPage extends Page {
 		if (editable && svp != null) {
 			Replay r = getSelection();
 			Stage ns = svp.getStage();
-			if (r != null && ns != null && ns != r.st.get() && Opts.conf("are you sure to change stage?")) {
-				r.st = svp.getStage().id;
-				r.marked = true;
+			if (r != null && ns != null) {
+				if (r.st != null) {
+					if (ns != r.st.get() && Opts.conf("are you sure to change stage?")) {
+						r.st = ns.id;
+						r.marked = true;
+					}
+				} else {
+					r.st = ns.id;
+					r.marked = true;
+				}
+				ista.setText(r.st.toString());
+				imap.setText(r.st.getCont().toString());
 			}
 		}
 		if (editable && bp != null) {
@@ -106,7 +113,7 @@ public abstract class AbRecdPage extends Page {
 		imgs.setEnabled(r != null);
 		seed.setEditable(editable && r != null);
 		vsta.setEnabled(r != null);
-		Stage st = r == null ? null : Identifier.getOr(r.st, Stage.class);
+		Stage st = r == null || r.st == null ? null : Identifier.getOr(r.st, Stage.class);
 		ista.setText(st == null ? "(unavailable)" : st.toString());
 		imap.setText(st == null ? "(unavailable)" : st.getCont().toString());
 		jlu.setEnabled(r != null);
@@ -122,32 +129,29 @@ public abstract class AbRecdPage extends Page {
 	private void addListeners() {
 		back.setLnr(x -> changePanel(getFront()));
 
-		vsta.setLnr(x -> changePanel(svp = new StageViewPage(getThis(), MapColc.values(), getSelection().st.get())));
+		vsta.setLnr(x -> {
+			Stage rStage = getSelection().st == null ? null : getSelection().st.get();
+			changePanel(svp = new StageViewPage(getThis(), MapColc.values(), rStage));
+		});
 
 		jlu.setLnr(x -> changePanel(bp = new BasisPage(getThis())));
 
 		rply.setLnr(x -> changePanel(new BattleInfoPage(getThis(), getSelection(), 0)));
 
-		recd.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Replay r = getSelection();
-				int conf = 1;
-				if (larg.isSelected())
-					conf |= 2;
-				changePanel(new BattleInfoPage(getThis(), r, conf));
-			}
+		recd.addActionListener(arg0 -> {
+			Replay r = getSelection();
+			int conf = 1;
+			if (larg.isSelected())
+				conf |= 2;
+			changePanel(new BattleInfoPage(getThis(), r, conf));
 		});
 
-		imgs.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Replay r = getSelection();
-				int conf = 5;
-				if (larg.isSelected())
-					conf |= 2;
-				changePanel(new BattleInfoPage(getThis(), r, conf));
-			}
+		imgs.addActionListener(arg0 -> {
+			Replay r = getSelection();
+			int conf = 5;
+			if (larg.isSelected())
+				conf |= 2;
+			changePanel(new BattleInfoPage(getThis(), r, conf));
 		});
 
 		seed.setLnr(x -> {

@@ -58,6 +58,7 @@ public abstract class EntityEditPage extends Page {
 	private final JL ltp = new JL(1, "type");
 	private final JL lct = new JL(1, "count");
 	private final JL ldps = new JL(1,"DPS");
+	private final JL lwp = new JL(1,"will");
 	private final JL cdps = new JL();
 	private final JTF fhp = new JTF();
 	private final JTF fhb = new JTF();
@@ -69,6 +70,7 @@ public abstract class EntityEditPage extends Page {
 	private final JTF fbs = new JTF();
 	private final JTF ftp = new JTF();
 	private final JTF fct = new JTF();
+	private final JTF fwp = new JTF();
 	private final ReorderList<String> jli = new ReorderList<>();
 	private final JScrollPane jspi = new JScrollPane(jli);
 	private final JBTN add = new JBTN(0, "add");
@@ -127,9 +129,8 @@ public abstract class EntityEditPage extends Page {
 	public void callBack(Object o) {
 		if (o instanceof int[]) {
 			int[] vals = (int[]) o;
-			if (vals.length == 3) {
-				ce.type = vals[0];
-				ce.abi = vals[1];
+			if (vals.length == 2) {
+				ce.abi = vals[0];
 				ce.loop = (ce.abi & AB_GLASS) > 0 ? 1 : -1;
 			}
 		}
@@ -169,7 +170,7 @@ public abstract class EntityEditPage extends Page {
 		SupPage<Unit> ans;
 
 		if(p != null) {
-			ans = new UnitFindPage(this, pack, p.desc.dependency.toArray(new String[0]));
+			ans = new UnitFindPage(this, pack, p.desc.dependency);
 		} else {
 			ans = new UnitFindPage(this);
 		}
@@ -213,6 +214,8 @@ public abstract class EntityEditPage extends Page {
 		set(fbs);
 		set(ftp);
 		set(fct);
+		set(lwp);
+		set(fwp);
 		set(ldps);
 		set(cdps);
 		ljp.end();
@@ -254,14 +257,12 @@ public abstract class EntityEditPage extends Page {
 		atkn.setToolTipText("<html>use name \"revenge\" for attack during HB animation<br>"
 				+ "use name \"resurrection\" for attack during death animation</html>");
 		ftp.setToolTipText(
-				"<html>" + "+1 for normal attack<br>"
-						+ "+2 to attack kb<br>"
-						+ "+4 to attack underground<br>"
-						+ "+8 to attack corpse<br>"
-						+ "+16 to attack soul<br>"
-						+ "+32 to attack ghost<br>"
-						+ "+64 to attack entities that can revive others<br>"
-						+ "+128 to attack enter animations</html>");
+				"<html>" + "+1 for normal attack<br>" + "+2 to attack kb<br>" + "+4 to attack underground<br>"
+						+ "+8 to attack corpse<br>" + "+16 to attack soul<br>" + "+32 to attack ghost<br>" +
+						"+64 to attack entities that can revive others<br>" + "+128 to attack enter animations</html>");
+		fwp.setToolTipText(
+				"<html>" + "The amount of slots this entity will take of the limit"
+				+ " when spawned</html>");
 
 		add.setEnabled(editable);
 		rem.setEnabled(editable);
@@ -337,6 +338,8 @@ public abstract class EntityEditPage extends Page {
 		set(ftp, x, y, 150, 550, 200, 50);
 		set(lct, x, y, 50, 600, 100, 50);
 		set(fct, x, y, 150, 600, 200, 50);
+		set(lwp, x, y, 1400, 1000, 200, 50);
+		set(fwp, x, y, 1600, 1000, 200, 50);
 
 		set(aet, x, y, 650, 100, 400, 500);
 
@@ -400,6 +403,7 @@ public abstract class EntityEditPage extends Page {
 		vitv.setText("" + ce.getItv());
 		ftp.setText("" + ce.touch);
 		fct.setText("" + ce.loop);
+		fwp.setText("" + (ce.will + 1));
 		cdps.setText("" + (int) (Math.round(getLvAtk() * ce.allAtk()) * getAtk()) * 30 / ce.getItv());
 		comm.setSelected(data.common);
 		mpt.setData(ce.rep.proc);
@@ -652,6 +656,13 @@ public abstract class EntityEditPage extends Page {
 				if (v[0] < -1)
 					v[0] = -1;
 				ce.loop = v[0];
+			}
+			if (jtf == fwp) {
+				if (v[0] < 0)
+					v[0] = 0;
+				if (v[0] > 50)
+					v[0] = 50;
+				ce.will = v[0] - 1;
 			}
 			getInput(jtf, v);
 		}

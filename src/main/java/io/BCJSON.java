@@ -17,7 +17,7 @@ public class BCJSON {
 
 	public static final String[] PC_LANG_CODES = { "en", "jp", "kr", "zh" };
 	public static final String[] PC_LANG_FILES = { "util.properties", "page.properties", "info.properties",
-			"StageName.txt", "UnitName.txt", "EnemyName.txt", "ComboName.txt", "proc.json", "animation_type.json" };
+			"StageName.txt", "UnitName.txt", "UnitExplanation.txt", "EnemyName.txt", "EnemyExplanation.txt", "ComboName.txt", "proc.json", "animation_type.json" };
 	public static final String JAR_LINK = "https://github.com/battlecatsultimate/bcu-assets/raw/master/jar/BCU-";
 	public static final String ALT_LINK = "https://gitee.com/lcy0x1/bcu-assets/raw/master/jar/BCU-";
 

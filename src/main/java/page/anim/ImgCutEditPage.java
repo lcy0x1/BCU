@@ -33,9 +33,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
 
 public class ImgCutEditPage extends Page implements AbEditPage {
 
@@ -186,7 +183,7 @@ public class ImgCutEditPage extends Page implements AbEditPage {
 	@Override
 	protected void resized(int x, int y) {
 		setBounds(0, 0, x, y);
-		set(aep, x, y, 550, 0, 1750, 50);
+		set(aep, x, y, 800, 0, 1750, 50);
 		set(back, x, y, 0, 0, 200, 50);
 		set(relo, x, y, 250, 0, 200, 50);
 		set(jspu, x, y, 0, 50, 300, 500);
@@ -284,7 +281,6 @@ public class ImgCutEditPage extends Page implements AbEditPage {
 			public void focusLost(FocusEvent arg0) {
 				changing = true;
 				String str = CommonStatic.verifyFileName(jtf.getText().trim());
-
 				if (str.length() == 0 || icet.anim == null || icet.anim.id.id.equals(str)) {
 					if (icet.anim != null)
 						jtf.setText(icet.anim.id.id);
@@ -326,9 +322,7 @@ public class ImgCutEditPage extends Page implements AbEditPage {
 		rem.setLnr(x -> {
 			if (!Opts.conf())
 				return;
-
 			changing = true;
-
 			AnimCE ac = icet.anim;
 			ac.delete();
 			agt.renewNodes();
@@ -351,10 +345,8 @@ public class ImgCutEditPage extends Page implements AbEditPage {
 			if (!Opts.conf())
 				return;
 			changing = true;
-
 			AnimCE ac = icet.anim;
 			ac.localize();
-
 			agt.renewNodes();
 
 			DefaultMutableTreeNode leftNode = agt.selectVeryFirstBaseNodeOr();
@@ -595,7 +587,6 @@ public class ImgCutEditPage extends Page implements AbEditPage {
 		swcl.setEnabled(aep.focus == null);
 		jta.setCellRenderer(new AnimTreeRenderer());
 		SwingUtilities.invokeLater(() -> jta.setUI(new TreeNodeExpander(jta)));
-		jta.setRowHeight(0);
 		setA(null);
 		jlf.setSelectedIndex(0);
 		jlt.setSelectedIndex(1);

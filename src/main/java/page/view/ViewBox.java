@@ -50,6 +50,10 @@ public interface ViewBox {
 			cont = vb;
 		}
 
+		public void resetPos() {
+			ori.x = 0;
+			ori.y = 0;
+		}
 	}
 
 	class Loader implements RetFunc {
@@ -126,6 +130,8 @@ public interface ViewBox {
 	}
 
 	void paint();
+
+	default void resetPos() { getCtrl().resetPos(); }
 
 	default void resize(double pow) {
 		getCtrl().resize(pow);

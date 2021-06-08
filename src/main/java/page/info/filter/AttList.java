@@ -1,10 +1,12 @@
 package page.info.filter;
 
+import common.util.unit.Trait;
 import main.MainBCU;
 import page.JTG;
 import page.Page;
 import utilpc.Theme;
 import utilpc.UtilPC;
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +37,12 @@ class AttList extends JList<String> {
 
 	}
 
+	protected AttList() {
+		if (MainBCU.nimbus) {
+			setSelectionBackground(MainBCU.light ? Theme.LIGHT.NIMBUS_SELECT_BG : Theme.DARK.NIMBUS_SELECT_BG);
+		}
+	}
+
 	protected AttList(int type, int para) {
 		if (MainBCU.nimbus) {
 			setSelectionBackground(MainBCU.light ? Theme.LIGHT.NIMBUS_SELECT_BG : Theme.DARK.NIMBUS_SELECT_BG);
@@ -58,7 +66,24 @@ class AttList extends JList<String> {
 				jl.setIcon(new ImageIcon(v));
 				return jl;
 			}
+		});
+	}
 
+	protected void setIcons(List<Trait> diyTraits) {
+		setCellRenderer(new DefaultListCellRenderer() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getListCellRendererComponent(JList<?> l, Object o, int ind, boolean s, boolean f) {
+				JLabel jl = (JLabel) super.getListCellRendererComponent(l, o, ind, s, f);
+				Trait trait = diyTraits.get(ind);
+				if (trait.BCTrait)
+					jl.setIcon(UtilPC.createIcon(3, ind));
+				else if (trait.icon != null)
+					jl.setIcon(trait.obtainIcon());
+				return jl;
+			}
 		});
 	}
 

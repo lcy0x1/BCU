@@ -1,3 +1,4 @@
+
 package page.pack;
 
 import common.CommonStatic;
@@ -51,6 +52,7 @@ public class UnitManagePage extends Page {
 	private final JBTN reml = new JBTN(0, "rem");
 	private final JBTN edit = new JBTN(0, "edit");
 	private final JBTN vuni = new JBTN(0, "vuni");
+	private final JBTN cmbo = new JBTN(0, "combo");
 
 	private final JTF jtff = new JTF();
 	private final JTF maxl = new JTF();
@@ -114,8 +116,9 @@ public class UnitManagePage extends Page {
 		set(maxl, x, y, w, 150, 300, 50);
 		set(lbmp, x, y, w, 200, 300, 50);
 		set(maxp, x, y, w, 250, 300, 50);
-		set(rar, x, y, w, 350, 300, 50);
-		set(cbl, x, y, w, 450, 300, 50);
+		set(rar, x, y, w, 300, 300, 50);
+		set(cbl, x, y, w, 400, 300, 50);
+		set(cmbo, x, y, w, 500, 300, 50);
 		w += 500;
 		set(jspl, x, y, w, 150, 300, 500);
 		set(jtfl, x, y, w, 700, 300, 50);
@@ -253,6 +256,8 @@ public class UnitManagePage extends Page {
 			setLevel(ul);
 		});
 
+		cmbo.addActionListener(x -> changePanel(new ComboEditPage(getThis(), pac)));
+
 	}
 
 	private void addListeners$2() {
@@ -385,6 +390,7 @@ public class UnitManagePage extends Page {
 		add(addl);
 		add(reml);
 		add(jtfl);
+		add(cmbo);
 		jlu.setCellRenderer(new UnitLCR());
 		jlf.setCellRenderer(new AnimLCR());
 		jld.setCellRenderer(new AnimLCR());

@@ -4,7 +4,6 @@ import common.util.lang.LocaleCenter.Binder;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -38,14 +37,7 @@ public class JBTN extends JButton implements LocComp {
 	}
 
 	public void setLnr(Consumer<ActionEvent> c) {
-		addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				c.accept(e);
-			}
-
-		});
+		addActionListener(c::accept);
 	}
 
 	public void setLnr(Supplier<Page> s) {

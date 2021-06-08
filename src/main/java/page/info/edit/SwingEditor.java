@@ -19,7 +19,6 @@ import utilpc.UtilPC;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
-import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
 public abstract class SwingEditor extends Editor {
@@ -207,9 +206,7 @@ public abstract class SwingEditor extends Editor {
 		public SwingEG(int ind, boolean edit, Runnable cb, Formatter.Context ctx) {
 			super(Data.Proc.getName(ind), edit, cb);
 			jlm = new JL(getItem(ctx));
-			BufferedImage v = UtilPC.getIcon(1, ind);
-			if (v != null)
-				jlm.setIcon(new ImageIcon(v));
+			jlm.setIcon(UtilPC.createIcon(1, ind));
 		}
 
 		@Override

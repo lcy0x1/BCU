@@ -83,26 +83,27 @@ public class MainBCU {
 		@SuppressWarnings("deprecation")
 		@Override
 		public void initProfile() {
-			LoadPage.prog("read assets");
+			LoadPage.prog("reading assets");
 			AssetLoader.load(LoadPage::prog);
-			LoadPage.prog("read BC data");
+			LoadPage.prog("reading BC data");
 			UserProfile.getBCData().load(LoadPage::prog, LoadPage::prog);
-			LoadPage.prog("read local animations");
+			LoadPage.prog("reading local animations");
 			Workspace.loadAnimations(null);
-			LoadPage.prog("read local animation group data");
+			LoadPage.prog("reading local animation group data");
 			AnimGroup.readGroupData();
-			LoadPage.prog("read packs");
+			LoadPage.prog("reading packs");
 			UserProfile.loadPacks(LoadPage::prog);
-			LoadPage.prog("read basis");
+			LoadPage.prog("reading basis");
 			BasisSet.read();
-			LoadPage.prog("read replays");
+			LoadPage.prog("reading replays");
 			Replay.read();
-			LoadPage.prog("finish reading");
+			LoadPage.prog("finished reading");
 		}
 
 		@Override
 		public void noticeErr(Exception e, ErrType t, String str) {
 			if (noNeedToShow(t)) {
+				System.out.println("???");
 				System.out.println(str);
 				e.printStackTrace();
 				return;
@@ -145,7 +146,7 @@ public class MainBCU {
 
 	public static final int ver = 50029;
 
-	public static int FILTER_TYPE = 1;
+	public static int FILTER_TYPE = 1, prefLevel = 50;
 	public static final boolean WRITE = !new File("./.project").exists();
 	public static boolean preload = false, trueRun = true, loaded = false, USE_JOGL = false;
 	public static boolean light = true, nimbus = false;

@@ -1,14 +1,17 @@
 package page;
 
 import common.system.P;
+import io.BCMusic;
 import main.Opts;
 import main.Printer;
 import utilpc.PP;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
@@ -31,6 +34,7 @@ public class MainFrame extends JFrame {
 	private static Page mainPanel = null;
 
 	public static void changePanel(Page p) {
+		BCMusic.clickSound();
 		F.FchangePanel(p);
 	}
 
@@ -73,9 +77,20 @@ public class MainFrame extends JFrame {
 
 	public MainFrame(String ver) {
 		super(Page.get(MainLocale.PAGE, "title") + " Ver " + ver);
+		//setIcon();
 		setLayout(null);
 		addListener();
 		sizer();
+	}
+
+	// Currently unused function used to officially add an icon to BCU, it currently works but will be left unused until an icon is oficially added to BCU assets
+	private void setIcon() {
+		try {
+			Image icons = ImageIO.read(new File("IconDirectoryHere.png"));
+			super.setIconImage(icons);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void initialize() {

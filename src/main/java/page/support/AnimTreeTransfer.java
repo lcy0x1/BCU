@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnimTreeTransfer extends TransferHandler {
+
+    private static final long serialVersionUID = 1L;
     private DataFlavor nodeFlavor;
     private final DataFlavor[] flavors = new DataFlavor[1];
     private DefaultMutableTreeNode[] nodesToRemove;

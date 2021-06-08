@@ -10,8 +10,6 @@ import page.basis.BasisPage;
 import page.view.UnitViewPage;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class UnitInfoPage extends Page {
 
@@ -70,58 +68,37 @@ public class UnitInfoPage extends Page {
 			int ih = info[i].getH();
 			set(info[i], x, y, 0, h, 1600, ih);
 			info[i].resized();
-			h += ih + 50;
+			h += ih + (n.val.forms[i].descriptionGet().replace("<br>", "").length() == 0 ? 50 : 0);
 		}
-		cont.setPreferredSize(size(x, y, 1600, h - 50).toDimension());
+		cont.setPreferredSize(size(x, y, 1600, h).toDimension());
 		jsp.getVerticalScrollBar().setUnitIncrement(size(x, y, 50));
 		jsp.revalidate();
 		set(trea, x, y, 1750, 100, 400, 1200);
 	}
 
 	private void addListeners() {
-		back.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
+		back.addActionListener(arg0 -> changePanel(getFront()));
+
+		prev.addActionListener(arg0 -> changePanel(new UnitInfoPage(getFront(), n.prev, b, extr.isSelected())));
+
+		anim.addActionListener(arg0 -> {
+			if (getFront() instanceof UnitViewPage)
 				changePanel(getFront());
-			}
+			else
+				changePanel(new UnitViewPage(getThis(), n.val));
 		});
 
-		prev.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				changePanel(new UnitInfoPage(getFront(), n.prev, b, extr.isSelected()));
-			}
-		});
+		next.addActionListener(arg0 -> changePanel(new UnitInfoPage(getFront(), n.next, b, extr.isSelected())));
 
-		anim.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (getFront() instanceof UnitViewPage)
-					changePanel(getFront());
-				else
-					changePanel(new UnitViewPage(getThis(), n.val));
+		find.addActionListener(arg0 -> {
+			if (getFront() instanceof BasisPage) {
+				changePanel(getFront());
+				getFront().callBack(n.val);
+				return;
 			}
-		});
-
-		next.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				changePanel(new UnitInfoPage(getFront(), n.next, b, extr.isSelected()));
-			}
-		});
-
-		find.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (getFront() instanceof BasisPage) {
-					changePanel(getFront());
-					getFront().callBack(n.val);
-					return;
-				}
-				Page p;
-				changePanel(p = new BasisPage(getThis()));
-				p.callBack(n.val);
-			}
+			Page p;
+			changePanel(p = new BasisPage(getThis()));
+			p.callBack(n.val);
 		});
 
 		extr.addActionListener(arg0 -> {

@@ -2,6 +2,7 @@ package page.info.filter;
 
 import common.battle.Basis;
 import common.battle.BasisSet;
+import common.system.ENode;
 import common.util.unit.Enemy;
 import page.MainFrame;
 import page.MainLocale;
@@ -23,8 +24,8 @@ public class EnemyListTable extends SortTable<Enemy> {
 	}
 
 	public static void redefine() {
-		tit = new String[] { "ID", "", "HP", "HB", "atk", Page.get(MainLocale.INFO, "range"), Page.get(MainLocale.INFO, "atkf"),
-				Page.get(MainLocale.INFO, "speed"), Page.get(MainLocale.INFO, "drop"), Page.get(MainLocale.INFO, "preaa"), "hp/dps", "HP/HB/dps" };
+		tit = new String[] { "ID", "", Page.get(MainLocale.INFO, "HP"), Page.get(MainLocale.INFO, "HB"), Page.get(MainLocale.INFO, "atk"), Page.get(MainLocale.INFO, "range"), Page.get(MainLocale.INFO, "atkf"),
+				Page.get(MainLocale.INFO, "speed"), Page.get(MainLocale.INFO, "drop"), Page.get(MainLocale.INFO, "preaa"), "dps", Page.get(MainLocale.INFO, "will") };
 	}
 
 	private final Page page;
@@ -55,7 +56,7 @@ public class EnemyListTable extends SortTable<Enemy> {
 		if (r < 0 || r >= list.size() || c != 1)
 			return;
 		Enemy e = list.get(r);
-		MainFrame.changePanel(new EnemyInfoPage(page, e));
+		MainFrame.changePanel(new EnemyInfoPage(page, ENode.getList(list, e)));
 
 	}
 
@@ -94,11 +95,10 @@ public class EnemyListTable extends SortTable<Enemy> {
 		else if (c == 9)
 			return e.de.rawAtkData()[0][1];
 		else if (c == 10)
-			return e.de.allAtk() == 0 ? Integer.MAX_VALUE : (int) ((long) e.de.getHp() * e.de.getItv() / e.de.allAtk());
+			return (int) ((long) e.de.allAtk() * 30 / e.de.getItv());
 		else if (c == 11)
-			return e.de.getHb() < 2 ? (int) get(e, 10) : (int) get(e, 10) / e.de.getHb();
-		else
-			return null;
+			return e.de.getWill() + 1;
+		return null;
 	}
 
 	@Override

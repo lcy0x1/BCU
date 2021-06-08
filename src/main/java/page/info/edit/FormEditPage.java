@@ -24,7 +24,7 @@ public class FormEditPage extends EntityEditPage {
 
 	private final JL llv = new JL(1, "Lv");
 	private final JL ldr = new JL(1, "price");
-	private final JL lrs = new JL(1, "CD");
+	private final JL lrs = new JL(1, "cdo");
 	private final JL llr = new JL(1, "t7");
 	private final JTF fdr = new JTF();
 	private final JTF flv = new JTF();
@@ -34,17 +34,20 @@ public class FormEditPage extends EntityEditPage {
 	private final JBTN stat = new JBTN(0, "stat");
 	private final JBTN impt = new JBTN(0, "import");
 	private final JBTN vene = new JBTN(0, "enemy");
+	private final JBTN pcoin = new JBTN(0, "pcoin");
+	private final JTF[] fdesc = new JTF[4];
 	private final UnitEditBox ueb;
 	private final Form form;
 	private final CustomUnit cu;
 	private int lv;
+	private String[] uniDesc;
 
 	public FormEditPage(Page p, UserPack pac, Form f) {
 		super(p, pac.desc.id, (CustomEntity) f.du, pac.editable, false);
 		form = f;
 		cu = (CustomUnit) form.du;
 		lv = f.unit.getPrefLv();
-		ueb = new UnitEditBox(this, pac.editable);
+		ueb = new UnitEditBox(this, pac, cu);
 		ini();
 		setData((CustomUnit) f.du);
 		resized();
@@ -89,7 +92,6 @@ public class FormEditPage extends EntityEditPage {
 				} else if (v.length >= 2) {
 					int firstLayer = v[0];
 					int secondLayer = v[1];
-
 					if (firstLayer == secondLayer) {
 						cu.back = cu.front = firstLayer;
 					} else if (firstLayer < secondLayer) {
@@ -129,6 +131,18 @@ public class FormEditPage extends EntityEditPage {
 		add(stat);
 		add(impt);
 		add(vene);
+		add(pcoin);
+		pcoin.setLnr(x -> changePanel(new PCoinEditPage(getThis(),form, editable)));
+		for (int i = 0 ; i < fdesc.length ; i++)
+			add(fdesc[i] = new JTF());
+
+		for (JTF jtf : fdesc)
+			jtf.setEnabled(editable);
+
+		for (int i = 0; i < fdesc.length; i++) {
+			int finalI = i;
+			fdesc[i].setLnr(d -> changeDesc(finalI));
+		}
 
 		subListener(vene, impt, vuni, form.unit);
 
@@ -137,6 +151,25 @@ public class FormEditPage extends EntityEditPage {
 			Node<Unit> nu = Node.getList(UserProfile.getAll(cu.getPack().uid.pack, Unit.class), u);
 			changePanel(new UnitInfoPage(this, nu));
 		});
+	}
+
+	private void changeDesc(int line) {
+		String txt = fdesc[line].getText().trim();
+		if (!txt.equals("Description Line " + (line + 1))) {
+			uniDesc[line] = txt;
+			if (txt.length() > 63) {
+				for (int i = line; i + 1 < fdesc.length; i++) {
+					if (uniDesc[i].length() > 63) {
+						uniDesc[i + 1] = uniDesc[i].substring(63) + uniDesc[i + 1];
+						uniDesc[i] = uniDesc[i].substring(0, 63);
+					}
+				}
+				if (uniDesc[fdesc.length - 1].length() > 63)
+					uniDesc[fdesc.length - 1] = uniDesc[fdesc.length - 1].substring(0, 63);
+			}
+		}
+		form.explanation = String.join("<br>", uniDesc);
+		setData(cu);
 	}
 
 	@Override
@@ -160,7 +193,12 @@ public class FormEditPage extends EntityEditPage {
 		}
 		set(impt, x, y, 50, 1150, 200, 50);
 		set(vene, x, y, 250, 1150, 200, 50);
-
+		set(pcoin, x, y, 450, 1150, 200, 50);
+		int h = 1000;
+		for (JTF jtf : fdesc) {
+			set(jtf, x, y, 650, h, 750, 50);
+			h += 50;
+		}
 		ueb.resized();
 
 	}
@@ -168,6 +206,9 @@ public class FormEditPage extends EntityEditPage {
 	@Override
 	protected void setData(CustomEntity data) {
 		super.setData(data);
+		uniDesc = form.descriptionGet().split("<br>",4);
+		for (int i = 0; i < fdesc.length; i++)
+			fdesc[i].setText("" + (uniDesc[i].length() > 0 ? uniDesc[i] : "Description Line " + (i + 1)));
 		flv.setText("" + lv);
 		frs.setText("" + bas.t().getFinRes(cu.getRespawn()));
 		fdr.setText("" + (int) (cu.getPrice() * 1.5));
@@ -179,7 +220,9 @@ public class FormEditPage extends EntityEditPage {
 				if (cu.getProc().getArr(id).exists())
 					imu |= 1 << id - IMUSFT;
 			}
-		ueb.setData(new int[] { cu.type, cu.abi, imu });
+		ueb.setData(new int[] { cu.abi, imu }, data.traits);
+		if (cu.getPCoin() != null)
+			cu.pcoin.update();
 	}
 
 	private String interpretLayer(int back, int front) {

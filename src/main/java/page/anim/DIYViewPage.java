@@ -73,6 +73,7 @@ public class DIYViewPage extends AbViewPage implements AbEditPage {
 
 	@Override
 	public void setSelection(AnimCE ac) {
+
 		DefaultMutableTreeNode selectedNode = agt.findAnimNode(ac, null);
 
 		if(selectedNode == null)
@@ -159,7 +160,7 @@ public class DIYViewPage extends AbViewPage implements AbEditPage {
 	@Override
 	protected void resized(int x, int y) {
 		super.resized(x, y);
-		set(aep, x, y, 550, 0, 1750, 50);
+		set(aep, x, y, 800, 0, 1750, 50);
 		set(jspu, x, y, 50, 100, 300, 1050);
 		set(ics, x, y, 1000, 1050, 200, 50);
 		set(uni, x, y, 750, 500, 200, 200);
@@ -174,9 +175,8 @@ public class DIYViewPage extends AbViewPage implements AbEditPage {
 	protected void updateChoice() {
 		TreePath path = jlt.getSelectionPath();
 
-		if(path == null) {
+		if(path == null)
 			return;
-		}
 
 		Object o = path.getLastPathComponent();
 
@@ -194,6 +194,7 @@ public class DIYViewPage extends AbViewPage implements AbEditPage {
 	}
 
 	private void addListeners() {
+
 		jlt.addTreeSelectionListener(t -> {
 			TreePath[] paths = jlt.getSelectionPaths();
 
@@ -315,13 +316,13 @@ public class DIYViewPage extends AbViewPage implements AbEditPage {
 		jlt.setCellRenderer(new AnimTreeRenderer());
 		group.setEnabled(aep.focus == null);
 		SwingUtilities.invokeLater(() -> jlt.setUI(new TreeNodeExpander(jlt)));
-		jlt.setRowHeight(0);
 		jlt.setTransferHandler(new AnimTreeTransfer(agt));
 		jlt.setDragEnabled(true);
 		jlt.addTreeExpansionListener(agt);
 		jlt.setDropMode(DropMode.ON_OR_INSERT);
 		remgroup.setEnabled(false);
 		addListeners();
+
 	}
 
 }

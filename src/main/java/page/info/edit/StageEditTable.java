@@ -5,6 +5,7 @@ import common.pack.Identifier;
 import common.pack.PackData;
 import common.pack.PackData.UserPack;
 import common.pack.UserProfile;
+import common.system.ENode;
 import common.util.Data;
 import common.util.stage.SCDef;
 import common.util.stage.SCDef.Line;
@@ -25,7 +26,9 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.List;
 
 public class StageEditTable extends AbJTable implements Reorderable {
 
@@ -238,9 +241,21 @@ public class StageEditTable extends AbJTable implements Reorderable {
 
 		if(button == MouseEvent.BUTTON1) {
 			AbEnemy e = Identifier.get(info[ind].enemy);
-			if (e instanceof Enemy)
-				MainFrame.changePanel(new EnemyInfoPage(page, (Enemy) e, info[ind].multiple, info[ind].mult_atk));
-			if (e instanceof EneRand)
+			if (e instanceof Enemy) {
+				List<Enemy> eList = new ArrayList<>();
+				List<int[]> muls = new ArrayList<>();
+				for (int i = info.length - 1; i >= 0; i--) {
+					AbEnemy f = Identifier.get(info[i].enemy);
+					if (!(f instanceof Enemy) || eList.contains(f))
+						continue;
+					eList.add((Enemy)f);
+					if (f == e)
+						muls.add(new int[]{info[ind].multiple,info[ind].mult_atk});
+					else
+						muls.add(new int[]{info[i].multiple,info[i].mult_atk});
+				}
+				MainFrame.changePanel(new EnemyInfoPage(page, ENode.getList(eList, (Enemy)e, muls)));
+			} if (e instanceof EneRand)
 				MainFrame.changePanel(new EREditPage(page, pack, (EneRand) e));
 		} else if(button == MouseEvent.BUTTON3) {
 			AbEnemySelectionPage find;

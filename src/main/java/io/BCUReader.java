@@ -15,6 +15,7 @@ import common.util.stage.MapColc;
 import common.util.stage.MapColc.DefMapColc;
 import common.util.stage.Stage;
 import common.util.stage.StageMap;
+import common.util.unit.Combo;
 import common.util.unit.Enemy;
 import common.util.unit.Unit;
 import main.MainBCU;
@@ -35,8 +36,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BCUReader extends DataIO {
 
@@ -63,6 +65,7 @@ public class BCUReader extends DataIO {
 				MainBCU.preload = jo.get("preload").getAsBoolean();
 				ViewBox.Conf.white = jo.get("transparent").getAsBoolean();
 				MainBCU.USE_JOGL = jo.get("JOGL").getAsBoolean();
+				MainBCU.prefLevel = jo.get("prefLv").getAsInt();
 				MainBCU.FILTER_TYPE = jo.get("filter").getAsInt();
 				BCMusic.play = jo.get("play_sound").getAsBoolean();
 				BCMusic.VOL_BG = jo.get("volume_BG").getAsInt();
@@ -121,8 +124,11 @@ public class BCUReader extends DataIO {
 								if (qs != null) {
 									for (String line : qs) {
 										String[] str = line.trim().split("\t");
-										int comboID = Integer.parseInt(str[0]);
-										MultiLangCont.getStatic().COMNAME.put(ni, comboID, str[1]);
+										List<Combo> combo = Arrays.stream(UserProfile.getBCData().combos.toArray())
+												.filter(c -> c.name.equals(str[0]))
+												.collect(Collectors.toList());
+										if (combo.size() > 0)
+											MultiLangCont.getStatic().COMNAME.put(ni, combo.get(0), str[1]);
 									}
 								}
 								continue;
@@ -203,6 +209,31 @@ public class BCUReader extends DataIO {
 										if (e == null || strs.length < 2)
 											continue;
 										MultiLangCont.getStatic().ENAME.put(ni, e, strs[1].trim());
+									}
+								continue;
+							}
+							if (nl.equals("UnitExplanation.txt")) {
+								Queue<String> qs = readLines(fl);
+								if(qs != null)
+									for (String str : qs) {
+										String[] strs = str.trim().split("\t");
+										Unit u = UserProfile.getBCData().units.get(CommonStatic.parseIntN(strs[0]));
+										if (u == null)
+											continue;
+										for (int i = 0; i < Math.min(u.forms.length, strs.length - 1); i++)
+											MultiLangCont.getStatic().FEXP.put(ni, u.forms[i], strs);
+									}
+								continue;
+							}
+							if (nl.equals("EnemyExplanation.txt")) {
+								Queue<String> qs = readLines(fl);
+								if(qs != null)
+									for (String str : qs) {
+										String[] strs = str.trim().split("\t");
+										Enemy e = UserProfile.getBCData().enemies.get(CommonStatic.parseIntN(strs[0]));
+										if (e == null || strs.length < 2)
+											continue;
+										MultiLangCont.getStatic().EEXP.put(ni, e, strs);
 									}
 								continue;
 							}

@@ -32,6 +32,8 @@ public class ConfigPage extends Page {
 	private final JTG musc = new JTG(0, "musc");
 	private final JTG exla = new JTG(0, "exlang");
 	private final JTG extt = new JTG(0, "extip");
+	private final JL preflv = new JL(0, "preflv");
+	private final JTF prlvmd = new JTF();
 	private final JBTN[] left = new JBTN[4];
 	private final JBTN[] right = new JBTN[4];
 	private final JL[] name = new JL[4];
@@ -104,7 +106,9 @@ public class ConfigPage extends Page {
 		set(rlla, x, y, 1100, 850, 450, 50);
 		set(nimbus, x, y, 1100, 950, 200, 50);
 		set(theme, x, y, 1350, 950, 200, 50);
-		set(row, x, y, 1100, 1050, 400, 50);
+		set(row, x, y, 1100, 1050, 450, 50);
+		set(preflv, x, y, 1100, 1150, 225, 50);
+		set(prlvmd, x, y, 1325, 1150, 225, 50);
 	}
 
 	private void addListeners() {
@@ -191,6 +195,8 @@ public class ConfigPage extends Page {
 
 			if (Opts.conf("This requires restart to apply. Do you want to restart?"+(MainBCU.nimbus ? "\n\nWarning : Using Nimbus theme may result in high CPU usage" : "")))
 				CommonStatic.def.exit(true);
+			else
+				MainBCU.nimbus = !MainBCU.nimbus;
 		});
 
 		theme.setLnr((b) -> {
@@ -244,6 +250,10 @@ public class ConfigPage extends Page {
 		add(nimbus);
 		add(theme);
 		add(row);
+		add(preflv);
+		add(prlvmd);
+		set(prlvmd);
+		prlvmd.setText("" + MainBCU.prefLevel);
 		jls.setSelectedIndex(cfg().lang);
 		jsmin.setValue(cfg().deadOpa);
 		jsmax.setValue(cfg().fullOpa);
@@ -277,6 +287,17 @@ public class ConfigPage extends Page {
 			theme.setEnabled(false);
 		}
 		addListeners();
+	}
+
+	protected void set(JTF jtf) {
+		jtf.setLnr(e -> {
+			String text = jtf.getText().trim();
+			if (text.length() > 0) {
+				int[] v = CommonStatic.parseIntsN(text);
+				MainBCU.prefLevel = Math.max(1, v[0]);
+				jtf.setText("" + MainBCU.prefLevel);
+			}
+		});
 	}
 
 	private void set(JSlider sl) {

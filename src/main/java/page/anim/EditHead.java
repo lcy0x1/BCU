@@ -67,12 +67,12 @@ public class EditHead extends Page implements EditLink {
 
 	@Override
 	protected void resized(int x, int y) {
-		set(undo, x, y, 250, 0, 200, 50);
-		set(save, x, y, 500, 0, 200, 50);
-		set(view, x, y, 800, 0, 200, 50);
-		set(icut, x, y, 1050, 0, 200, 50);
-		set(mmdl, x, y, 1300, 0, 200, 50);
-		set(manm, x, y, 1550, 0, 200, 50);
+		set(undo, x, y, 0, 0, 200, 50);
+		set(save, x, y, 250, 0, 200, 50);
+		set(view, x, y, 550, 0, 200, 50);
+		set(icut, x, y, 800, 0, 200, 50);
+		set(mmdl, x, y, 1050, 0, 200, 50);
+		set(manm, x, y, 1300, 0, 200, 50);
 	}
 
 	private void addListeners() {

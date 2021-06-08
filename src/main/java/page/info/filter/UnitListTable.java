@@ -28,7 +28,7 @@ public class UnitListTable extends SortTable<Form> {
 
 	public static void redefine() {
 		tit = new String[] { "ID", "name", Page.get(MainLocale.INFO, "pref"), "HP", "HB", "atk", Page.get(MainLocale.INFO, "range"),
-				Page.get(MainLocale.INFO, "speed"), "dps", Page.get(MainLocale.INFO, "preaa"), "CD", Page.get(MainLocale.INFO, "price"), Page.get(MainLocale.INFO, "atkf") };
+				Page.get(MainLocale.INFO, "speed"), "dps", Page.get(MainLocale.INFO, "preaa"), "CD", Page.get(MainLocale.INFO, "price"), Page.get(MainLocale.INFO, "atkf"), Page.get(MainLocale.INFO, "will") };
 	}
 
 	private final Page page;
@@ -109,8 +109,9 @@ public class UnitListTable extends SortTable<Form> {
 			return e.getDefaultPrice(1);
 		else if (c == 12)
 			return du.getItv();
-		else
-			return null;
+		else if (c == 13)
+			return du.getWill() + 1;
+		return null;
 	}
 
 	@Override

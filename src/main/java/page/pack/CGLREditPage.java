@@ -15,10 +15,6 @@ import page.info.filter.UnitFindPage;
 import page.support.UnitLCR;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
@@ -127,116 +123,85 @@ public class CGLREditPage extends Page {
 
 	private void addListeners() {
 
-		back.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				changePanel(getFront());
-			}
-		});
+		back.addActionListener(arg0 -> changePanel(getFront()));
 
-		vuif.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (ufp == null)
-					ufp = new UnitFindPage(getThis());
-				changePanel(ufp);
-			}
+		vuif.addActionListener(arg0 -> {
+			if (ufp == null)
+				ufp = new UnitFindPage(getThis(), pack.getSID(), pack.desc.dependency);
+			changePanel(ufp);
 		});
 
 	}
 
 	private void addListeners$CG() {
 
-		addcg.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				changing = true;
-				cg = new CharaGroup(pack.getNextID(CharaGroup.class));
-				lcg.add(cg);
-				updateCGL();
-				jlcg.setSelectedValue(cg, true);
-				changing = false;
-			}
+		addcg.addActionListener(arg0 -> {
+			changing = true;
+			cg = new CharaGroup(pack.getNextID(CharaGroup.class));
+			lcg.add(cg);
+			updateCGL();
+			jlcg.setSelectedValue(cg, true);
+			changing = false;
 		});
 
-		remcg.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (cg == null)
-					return;
-				changing = true;
-				List<CharaGroup> list = lcg.getList();
-				int ind = list.indexOf(cg) - 1;
-				if (ind < 0 && list.size() > 1)
-					ind = 0;
-				list.remove(cg);
-				lcg.remove(cg);
-				if (ind >= 0)
-					cg = list.get(ind);
-				else
-					cg = null;
-				updateCGL();
-				changing = false;
-			}
+		remcg.addActionListener(arg0 -> {
+			if (cg == null)
+				return;
+			changing = true;
+			List<CharaGroup> list = lcg.getList();
+			int ind = list.indexOf(cg) - 1;
+			if (ind < 0 && list.size() > 1)
+				ind = 0;
+			list.remove(cg);
+			lcg.remove(cg);
+			if (ind >= 0)
+				cg = list.get(ind);
+			else
+				cg = null;
+			updateCGL();
+			changing = false;
 		});
 
-		jlcg.addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				if (changing || jlcg.getValueIsAdjusting())
-					return;
-				changing = true;
-				cg = jlcg.getSelectedValue();
-				updateCG();
-				changing = false;
-			}
-
+		jlcg.addListSelectionListener(arg0 -> {
+			if (changing || jlcg.getValueIsAdjusting())
+				return;
+			changing = true;
+			cg = jlcg.getSelectedValue();
+			updateCG();
+			changing = false;
 		});
 
-		addus.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				List<Unit> u = jlua.getSelectedValuesList();
-				if (cg == null || u.size() == 0)
-					return;
-				changing = true;
-				cg.set.addAll(u);
-				updateCG();
-				jlus.setSelectedValue(u.get(0), true);
-				changing = false;
-			}
+		addus.addActionListener(arg0 -> {
+			List<Unit> u = jlua.getSelectedValuesList();
+			if (cg == null || u.size() == 0)
+				return;
+			changing = true;
+			cg.set.addAll(u);
+			updateCG();
+			jlus.setSelectedValue(u.get(0), true);
+			changing = false;
 		});
 
-		remus.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Unit u = jlus.getSelectedValue();
-				if (cg == null || u == null)
-					return;
-				changing = true;
-				List<Unit> list = new ArrayList<>();
-				list.addAll(cg.set);
-				int ind = list.indexOf(u) - 1;
-				if (ind < 0 && list.size() > 1)
-					ind = 0;
-				cg.set.remove(u);
-				updateCG();
-				jlus.setSelectedIndex(ind);
-				changing = false;
-			}
+		remus.addActionListener(arg0 -> {
+			Unit u = jlus.getSelectedValue();
+			if (cg == null || u == null)
+				return;
+			changing = true;
+			List<Unit> list = new ArrayList<>(cg.set);
+			int ind = list.indexOf(u) - 1;
+			if (ind < 0 && list.size() > 1)
+				ind = 0;
+			cg.set.remove(u);
+			updateCG();
+			jlus.setSelectedIndex(ind);
+			changing = false;
 		});
 
-		cgt.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (cg == null)
-					return;
-				cg.type = 2 - cg.type;
-				cgt.setText(0, cg.type == 0 ? "include" : "exclude");
-			}
-
+		cgt.addActionListener(arg0 -> {
+			if (cg == null)
+				return;
+			cg.type = 2 - cg.type;
+			cgt.setText(0, cg.type == 0 ? "include" : "exclude");
 		});
 
 		jtfna.setLnr(x -> {
@@ -249,95 +214,73 @@ public class CGLREditPage extends Page {
 
 	private void addListeners$LR() {
 
-		addlr.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				changing = true;
-				lr = new LvRestrict(pack.getNextID(LvRestrict.class));
-				llr.add(lr);
-				updateLRL();
-				jllr.setSelectedValue(lr, true);
-				changing = false;
-			}
+		addlr.addActionListener(arg0 -> {
+			changing = true;
+			lr = new LvRestrict(pack.getNextID(LvRestrict.class));
+			llr.add(lr);
+			updateLRL();
+			jllr.setSelectedValue(lr, true);
+			changing = false;
 		});
 
-		remlr.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (lr == null)
-					return;
-				changing = true;
-				List<LvRestrict> list = llr.getList();
-				int ind = list.indexOf(lr) - 1;
-				if (ind < 0 && list.size() > 1)
-					ind = 0;
-				list.remove(lr);
-				llr.remove(lr);
-				if (ind >= 0)
-					lr = list.get(ind);
-				else
-					lr = null;
-				updateLRL();
-				changing = false;
-			}
+		remlr.addActionListener(arg0 -> {
+			if (lr == null)
+				return;
+			changing = true;
+			List<LvRestrict> list = llr.getList();
+			int ind = list.indexOf(lr) - 1;
+			if (ind < 0 && list.size() > 1)
+				ind = 0;
+			list.remove(lr);
+			llr.remove(lr);
+			if (ind >= 0)
+				lr = list.get(ind);
+			else
+				lr = null;
+			updateLRL();
+			changing = false;
 		});
 
-		jllr.addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				if (changing || jllr.getValueIsAdjusting())
-					return;
-				changing = true;
-				lr = jllr.getSelectedValue();
-				updateLR();
-				changing = false;
-			}
-
+		jllr.addListSelectionListener(arg0 -> {
+			if (changing || jllr.getValueIsAdjusting())
+				return;
+			changing = true;
+			lr = jllr.getSelectedValue();
+			updateLR();
+			changing = false;
 		});
 
-		addsb.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				changing = true;
-				int[] lv = new int[] { 120, 10, 10, 10, 10, 10 };
-				lr.res.put(cg, lv);
-				sb = cg;
-				updateLR();
-				changing = false;
-			}
+		addsb.addActionListener(arg0 -> {
+			changing = true;
+			int[] lv = new int[] { 120, 10, 10, 10, 10, 10 };
+			lr.res.put(cg, lv);
+			sb = cg;
+			updateLR();
+			changing = false;
 		});
 
-		remsb.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (sb == null)
-					return;
-				changing = true;
-				int ind = jlsb.getSelectedIndex();
-				lr.res.remove(sb);
-				updateLR();
-				if (lr.res.size() >= ind)
-					ind = lr.res.size() - 1;
-				jlsb.setSelectedIndex(ind);
-				sb = jlsb.getSelectedValue();
-				updateSB();
-				changing = false;
-			}
+		remsb.addActionListener(arg0 -> {
+			if (sb == null)
+				return;
+			changing = true;
+			int ind = jlsb.getSelectedIndex();
+			lr.res.remove(sb);
+			updateLR();
+			if (lr.res.size() >= ind)
+				ind = lr.res.size() - 1;
+			jlsb.setSelectedIndex(ind);
+			sb = jlsb.getSelectedValue();
+			updateSB();
+			changing = false;
 		});
 
-		jlsb.addListSelectionListener(new ListSelectionListener() {
-
-			@Override
-			public void valueChanged(ListSelectionEvent arg0) {
-				if (changing || jlsb.getValueIsAdjusting())
-					return;
-				changing = true;
-				sb = jlsb.getSelectedValue();
-				updateSB();
-				changing = false;
-			}
-
+		jlsb.addListSelectionListener(arg0 -> {
+			if (changing || jlsb.getValueIsAdjusting())
+				return;
+			changing = true;
+			sb = jlsb.getSelectedValue();
+			updateSB();
+			changing = false;
 		});
 
 		jtflr.setLnr(x -> {
@@ -381,8 +324,7 @@ public class CGLREditPage extends Page {
 	}
 
 	private void put(int[] tar, int[] val) {
-		for (int i = 0; i < Math.min(tar.length, val.length); i++)
-			tar[i] = val[i];
+		System.arraycopy(val, 0, tar, 0, Math.min(tar.length, val.length));
 	}
 
 	private void set(JTF jtf) {
@@ -413,8 +355,10 @@ public class CGLREditPage extends Page {
 	private void set(JTF jtf, String str, int[] lvs) {
 		if (lvs != null) {
 			str += "Lv." + lvs[0] + " {";
+			StringBuilder strBuilder = new StringBuilder(str);
 			for (int i = 1; i < 5; i++)
-				str += lvs[i] + ",";
+				strBuilder.append(lvs[i]).append(",");
+			str = strBuilder.toString();
 			str += lvs[5] + "}";
 		}
 		jtf.setText(str);

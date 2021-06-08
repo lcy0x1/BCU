@@ -4,6 +4,7 @@ import common.CommonStatic;
 import common.pack.Identifier;
 import common.pack.PackData;
 import common.pack.UserProfile;
+import common.system.ENode;
 import common.util.EREnt;
 import common.util.unit.AbEnemy;
 import common.util.unit.EneRand;
@@ -20,7 +21,9 @@ import page.support.Reorderable;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.List;
 
 class EREditTable extends AbJTable implements Reorderable {
 
@@ -152,9 +155,19 @@ class EREditTable extends AbJTable implements Reorderable {
 		int r = p.y / getRowHeight();
 		EREnt<Identifier<AbEnemy>> er = rand.list.get(r);
 		AbEnemy e = Identifier.get(er.ent);
-		if (e instanceof Enemy)
-			MainFrame.changePanel(new EnemyInfoPage(page, (Enemy) e, er.multi, er.mula));
-		else if(e instanceof EneRand && pack != null && !e.getID().pack.equals(pack))
+		if (e instanceof Enemy) {
+			java.util.List<Enemy> eList = new ArrayList<>();
+			List<int[]> muls = new ArrayList<>();
+			for (int i = rand.list.size() - 1; i >= 0; i--) {
+				EREnt<Identifier<AbEnemy>> es = rand.list.get(i);
+				AbEnemy se = Identifier.get(es.ent);
+				if (se instanceof Enemy && !eList.contains(se)) {
+					eList.add((Enemy) se);
+					muls.add(new int[]{es.multi,es.mula});
+				}
+			}
+			MainFrame.changePanel(new EnemyInfoPage(page, ENode.getList(eList,(Enemy) e,muls)));
+		} else if (e instanceof EneRand && pack != null && !e.getID().pack.equals(pack))
 			MainFrame.changePanel(new EREditPage(page, UserProfile.getUserPack(((EneRand) e).id.pack)));
 	}
 

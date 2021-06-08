@@ -17,7 +17,7 @@ public abstract class KeyHandler extends Page implements FakeKey {
 
 	protected int[][] slots = new int[][] { { VK_Q, VK_W, VK_E, VK_R, VK_T }, { VK_A, VK_S, VK_D, VK_F, VK_G },
 			{ VK_Z, VK_X, VK_C, VK_V, VK_B } };
-	protected int[] act = new int[] { VK_1, VK_2, VK_3 };
+	protected int[] act = new int[] { VK_1, VK_2, VK_3, VK_4 };
 	protected int[] change = new int[] { VK_A };
 	protected int[] lock = new int[] { VK_SHIFT };
 

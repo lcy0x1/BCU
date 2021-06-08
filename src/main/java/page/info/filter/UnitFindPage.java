@@ -28,10 +28,10 @@ public class UnitFindPage extends Page implements SupPage<Unit> {
 		resized();
 	}
 
-	public UnitFindPage(Page p, String pack, String... parent) {
+	public UnitFindPage(Page p, String pack, List<String> parents) {
 		super(p);
 
-		ufb = UnitFilterBox.getNew(this, pack, parent);
+		ufb = UnitFilterBox.getNew(this, pack, parents);
 		ini();
 		resized();
 	}

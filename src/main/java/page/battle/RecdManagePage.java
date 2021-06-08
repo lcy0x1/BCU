@@ -4,6 +4,7 @@ import common.CommonStatic;
 import common.pack.Source;
 import common.util.stage.Replay;
 import main.MainBCU;
+import main.Opts;
 import page.JBTN;
 import page.JTF;
 import page.Page;
@@ -14,7 +15,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.List;
 
 public class RecdManagePage extends AbRecdPage {
 
@@ -57,6 +57,13 @@ public class RecdManagePage extends AbRecdPage {
 
 	@Override
 	protected void setRecd(Replay r) {
+		try {
+			int check = r == null || r.st == null ? 0 : r.st.get().health;
+		} catch (Exception e) {
+			Opts.pop("Please change the stage to a new one","Replay stage not found");
+			r.st = null;
+			r.marked = false;
+		}
 		super.setRecd(r);
 		dele.setEnabled(r != null);
 		rena.setEditable(r != null);
@@ -82,7 +89,7 @@ public class RecdManagePage extends AbRecdPage {
 			Replay r = jlr.getSelectedValue();
 			if (r == null)
 				return;
-			r.rename(MainBCU.validate(rena.getText().trim(), '#'));
+			r.rename(MainBCU.validate(rena.getText().trim(),'#'));
 			rena.setText(r.rl.id);
 		});
 

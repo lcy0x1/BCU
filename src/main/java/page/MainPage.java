@@ -29,7 +29,7 @@ public class MainPage extends Page {
 	private final JLabel memo = new JLabel();
 	private final JLabel seicon = new JLabel("Source of enemy icon: battlecats-db.com");
 	private final JLabel sgifau = new JLabel("Author of GIF exporter: Kevin Weiner, FM Software");
-	private final JLabel welcome = new JLabel("Welcome "+MainBCU.author+"!");
+	private final JLabel welcome = new JLabel("Welcome " + MainBCU.author + "!");
 	private final JBTN vuni = new JBTN(0, "vuni");
 	private final JBTN vene = new JBTN(0, "vene");
 	private final JBTN vsta = new JBTN(0, "vsta");
@@ -49,9 +49,13 @@ public class MainPage extends Page {
 	private final JBTN camm = new JBTN(0, "camm");
 	private final JBTN cama = new JBTN(0, "cama");
 	private final JBTN save = new JBTN(0, "save");
-	private final JBTN bckp = new JBTN(0, "backup");
 	private final JBTN allf = new JBTN(0, "all file");
 	private final JBTN auth = new JBTN(0, "author");
+	private final JBTN dbug = new JBTN(0, "debug");
+
+	private final JBTN refr = new JBTN(0, "refrtips");
+	private final JLabel tips = new JLabel();
+	private final String[] ALLTIPS = Page.get(MainLocale.PAGE, "tip", 9);
 
 	public MainPage() {
 		super(null);
@@ -82,13 +86,15 @@ public class MainPage extends Page {
 		set(vbgr, x, y, 600, 600, 200, 50);
 		set(vmsc, x, y, 600, 700, 200, 50);
 		set(allf, x, y, 600, 800, 200, 50);
+		set(tips, x, y, 600, 850, 1200, 200);
 
 		set(conf, x, y, 900, 200, 200, 50);
 		set(save, x, y, 900, 300, 200, 50);
 		set(bass, x, y, 900, 400, 200, 50);
-		set(bckp, x, y, 900, 500, 200, 50);
+		set(dbug, x, y, 900, 500, 200, 50);
 		set(curr, x, y, 900, 600, 200, 50);
 		set(auth, x, y, 900, 700, 200, 50);
+		set(refr, x, y, 900, 800, 200, 50);
 
 		set(vsta, x, y, 1200, 200, 200, 50);
 		set(veif, x, y, 1200, 300, 200, 50);
@@ -131,21 +137,22 @@ public class MainPage extends Page {
 
 			author = author.trim();
 
-			for(PackData.UserPack p : UserProfile.getUserPacks()) {
-				if(p.editable) {
+			for (PackData.UserPack p : UserProfile.getUserPacks()) {
+				if (p.editable) {
 					p.desc.author = author;
 				}
 			}
 
 			MainBCU.author = author;
 
-			if(!author.isEmpty()) {
+			if (!author.isEmpty()) {
 				welcome.setVisible(true);
 				welcome.setText("Welcome " + MainBCU.author + "!");
 			} else {
 				welcome.setVisible(false);
 			}
 		});
+		refr.setLnr(c -> tips.setText("<html>" + ALLTIPS[(int)(Math.random() * ALLTIPS.length)] + "</html>"));
 	}
 
 	private void ini() {
@@ -172,9 +179,13 @@ public class MainPage extends Page {
 		add(sgifau);
 		add(welcome);
 		add(rply);
-		add(bckp);
 		add(allf);
 		add(auth);
+		add(dbug);
+		add(refr);
+		add(tips);
+		tips.setText("<html>" + ALLTIPS[(int)(Math.random() * ALLTIPS.length)] + "</html>");
+
 
 		welcome.setVisible(!MainBCU.author.isEmpty());
 

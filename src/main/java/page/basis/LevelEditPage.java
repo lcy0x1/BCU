@@ -331,7 +331,7 @@ public class LevelEditPage extends Page {
 
 		add(clear);
 
-		String[] strs = UtilPC.lvText(f, lu().getLv(f.unit).getLvs());
+		String[] strs = UtilPC.lvText(f, lu().getLv(f).getLvs());
 
 		levels.setText(strs[0]);
 		pcoin.setText(strs[1]);

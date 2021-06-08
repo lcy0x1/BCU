@@ -3,6 +3,7 @@ package page.view;
 import common.pack.PackData;
 import common.pack.Source;
 import common.pack.UserProfile;
+import common.system.ENode;
 import common.util.anim.AnimCE;
 import common.util.anim.AnimD;
 import common.util.anim.EAnimI;
@@ -16,6 +17,8 @@ import page.support.AnimLCR;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class EnemyViewPage extends AbViewPage {
@@ -86,7 +89,13 @@ public class EnemyViewPage extends AbViewPage {
 			if (ene == null)
 				return;
 
-			changePanel(new EnemyInfoPage(getThis(), ene));
+			ListModel<Enemy> enes = jlu.getModel();
+			List<Enemy> lis = new ArrayList<>();
+			for (int i = 0;i < enes.getSize(); i++)
+				lis.add(enes.getElementAt(i));
+			ENode n = ENode.getList(lis,ene);
+
+			changePanel(new EnemyInfoPage(getThis(), n));
 		});
 
 		ActionListener[] listeners = copy.getActionListeners();

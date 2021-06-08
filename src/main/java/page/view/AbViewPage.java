@@ -41,6 +41,7 @@ public abstract class AbViewPage extends Page {
 	private final JBTN nex = new JBTN(0, "nextf");
 	private final JTG gif = new JTG(0, "gif");
 	private final JBTN png = new JBTN(0, "png");
+	private final JBTN camres = new JBTN(0, "rescam");
 	private final JLabel scale = new JLabel(MainLocale.getLoc(MainLocale.PAGE, "zoom"));
 
 	protected final ViewBox vb;
@@ -106,6 +107,7 @@ public abstract class AbViewPage extends Page {
 
 	protected void preini() {
 		add(back);
+		add(camres);
 		add(copy);
 		add((Canvas) vb);
 		add(jspt);
@@ -132,6 +134,7 @@ public abstract class AbViewPage extends Page {
 	protected void resized(int x, int y) {
 		setBounds(0, 0, x, y);
 		set(back, x, y, 0, 0, 200, 50);
+		set(camres, x ,y, 525, 0, 200, 50);
 		set(copy, x, y, 250, 0, 200, 50);
 		set((Canvas) vb, x, y, 1000, 100, 1000, 600);
 		set(jspt, x, y, 400, 550, 300, 400);
@@ -198,6 +201,9 @@ public abstract class AbViewPage extends Page {
 
 	private void addListener() {
 		back.addActionListener(arg0 -> changePanel(getFront()));
+
+		camres.setLnr(x -> { vb.resetPos();
+		});
 
 		copy.addActionListener(arg0 -> {
 			EAnimI ei = vb.getEnt();
